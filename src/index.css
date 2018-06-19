@@ -1,0 +1,10 @@
+html, body, #root {
+
+	/* app div needs 100% width and height */
+	position: absolute;
+	width: 100% !important;
+	height: 100% !important;
+
+	/* a bug in material-ui <Grid/>, fixed by disabling overflow */
+	overflow-x: hidden;
+}
