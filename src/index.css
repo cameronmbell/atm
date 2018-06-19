@@ -1,5 +1,9 @@
 html, body, #root {
 
+	/* remove browser crap */
+	padding: none;
+	margin: 0;
+
 	/* app div needs 100% width and height */
 	position: absolute;
 	width: 100% !important;
