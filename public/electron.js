@@ -13,7 +13,7 @@ let createWindow = () => {
 	// create window and remove menu ribbon
 	mainWindow = new BrowserWindow({ 
 		minWidth: 640, minHeight: 360,
-		width: 768, height: 576,
+		width: 768, height: 512,
 		frame: false,
 		center: true
 	})
