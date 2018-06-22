@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 
+import DatabaseUsers from '../Database/DatabaseUsers'
+
 class LoginForm extends Component {
 	state = {
 		// all form data, written into component state
 		data: {
 			userName: '',
-			PIN: ''
+			PIN: '',
+			db: new DatabaseUsers({
+				'Dunne': {
+					fullName: 'Ryan Dunne',
+					balance: '12345.00',
+					pin: '1337'
+				}
+			})
 		},
 
 		// store errors form encountered
@@ -28,10 +37,17 @@ class LoginForm extends Component {
 		if (!data.PIN) err.PIN = 'PIN can\'t be blank'
 		if (data.PIN.length !== 4) err.PIN = 'PIN must be 4 characters'
 
+		let usr = data.db.getUser(data.userName)
+		if (usr === undefined) err.userName = 'unknown user'
+		else {
+			if (usr.pin !== data.PIN) err.userName = 'bad PIN'
+		}
+
 		return err
 	}
 
 	handleSubmit = e => {
+		e.preventDefault()
 		this.setState({ errors: this.handleValidate(this.state.data) })
 
 		return false
