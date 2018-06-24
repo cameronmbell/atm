@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
 
-import DatabaseUsers from '../Database/DatabaseUsers'
+// prop types
+import PropTypes from 'prop-types'
 
 class LoginForm extends Component {
 	state = {
 		// all form data, written into component state
 		data: {
 			userName: '',
-			PIN: '',
-			db: new DatabaseUsers({
-				'Dunne': {
-					fullName: 'Ryan Dunne',
-					balance: '12345.00',
-					pin: '1337'
-				}
-			})
+			PIN: ''
 		},
 
 		// store errors form encountered
@@ -37,18 +31,18 @@ class LoginForm extends Component {
 		if (!data.PIN) err.PIN = 'PIN can\'t be blank'
 		if (data.PIN.length !== 4) err.PIN = 'PIN must be 4 characters'
 
-		let usr = data.db.getUser(data.userName)
-		if (usr === undefined) err.userName = 'unknown user'
-		else {
-			if (usr.pin !== data.PIN) err.userName = 'bad PIN'
-		}
-
 		return err
 	}
 
 	handleSubmit = e => {
 		e.preventDefault()
-		this.setState({ errors: this.handleValidate(this.state.data) })
+
+		const errors = this.handleValidate(this.state.data)
+		this.setState({ errors })
+
+		if (Object.keys(errors).length === 0) {
+			this.props.submit(this.state.data)
+		}
 
 		return false
 	}
@@ -84,6 +78,10 @@ class LoginForm extends Component {
 			</div>
 		)
 	}
+}
+
+LoginForm.propTypes = {
+	submit: PropTypes.func.isRequired
 }
 
 export default LoginForm
