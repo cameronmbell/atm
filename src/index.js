@@ -22,6 +22,9 @@ import './index.css'
 import App from './Components/App'
 import registerServiceWorker from './registerServiceWorker'
 
+// reauthenticate user on reload
+import { userLoggedIn } from './Components/Actions/LoginAuth'
+
 // import reducer to provide to all children
 import RootReducer from './Components/RootReducer'
 
@@ -31,13 +34,23 @@ const store = createStore(
 	applyMiddleware(thunk)
 )
 
+// reauthenticate user on reload
+// if localStorage written to
+if (localStorage.user) {
+	try {
+		store.dispatch(userLoggedIn(JSON.parse(localStorage.user)))
+	} catch(e) {
+		console.warn('bad local storage')
+	}
+}
+
 // draw to DOM
 render((
-	<Router>
-		<Provider store={store}>
+	<Provider store={store}>
+		<Router>
 			<App/>
-		</Provider>
-	</Router>
+		</Router>
+	</Provider>
 ), document.getElementById('root'))
 
 registerServiceWorker()

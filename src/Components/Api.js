@@ -32,9 +32,13 @@ export default {
 					reject({ userName: 'unknown username' })
 				} else {
 					if (id.pin !== credentials.pin)
-						reject({ pin: 'invalid pin' })
-					else
-						resolve(id)
+						reject({ pin: 'invalid pin, expected: ' + id.pin })
+					else {
+						resolve({
+							...id,
+							userName: credentials.userName
+						})
+					}
 				}
 			})
 	}

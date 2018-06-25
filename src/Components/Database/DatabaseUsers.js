@@ -7,12 +7,25 @@ import Database from './Database'
 //		balance: '1234.00',
 //		pin: '1234'
 // }
+
 class DatabaseUsers {
 	// create/load the user database
 	constructor(defaultUsers) {
+		let sanitizedDefaults = {}
+
+		for (let key in (defaultUsers || {})) {
+			if(defaultUsers.hasOwnProperty(key)) {
+				sanitizedDefaults[key] = Object.assign({
+					fullName: 'First Last',
+					balance: '0.00',
+					pin: '0000'
+				}, defaultUsers[key])
+			}
+		}
+
 		this.db = new Database({
 			fileName: 'userDatabase',
-			defaults: (defaultUsers || {})
+			defaults: sanitizedDefaults
 		})
 	}
 
