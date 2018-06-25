@@ -8,7 +8,7 @@ class LoginForm extends Component {
 		// all form data, written into component state
 		data: {
 			userName: '',
-			PIN: ''
+			pin: ''
 		},
 
 		// store errors form encountered
@@ -28,8 +28,8 @@ class LoginForm extends Component {
 		const err = { }
 
 		if (!data.userName) err.userName = 'username can\'t be blank'
-		if (!data.PIN) err.PIN = 'PIN can\'t be blank'
-		if (data.PIN.length !== 4) err.PIN = 'PIN must be 4 characters'
+		if (!data.pin) err.pin = 'PIN can\'t be blank'
+		if (data.pin.length !== 4) err.pin = 'PIN must be 4 characters'
 
 		return err
 	}
@@ -41,14 +41,19 @@ class LoginForm extends Component {
 		this.setState({ errors })
 
 		if (Object.keys(errors).length === 0) {
-			this.props.submit(this.state.data)
+			this.setState({ loading: true })
+
+			// consider submit as async
+			this.props
+				.submit(this.state.data)
+				.catch(err => this.setState({ errors: err, loading: false }))
 		}
 
 		return false
 	}
 
 	render() {
-		const { data, errors } = this.state
+		const { data, errors, loading } = this.state
 
 		return (
 			<div>
@@ -60,20 +65,20 @@ class LoginForm extends Component {
 						value={data.userName}
 						onChange={this.handleChange}
 					/>
+					<br/>Login errors: {errors.userName || 'none'}<br/>
 
 					<br/>
 					<input 
 						type='text' 
-						name='PIN'
+						name='pin'
 						placeholder='PIN' 
-						value={data.PIN}
+						value={data.pin}
 						onChange={this.handleChange}
 					/>
 
-					<br/>
-					{errors.userName}<br/>
-					{errors.PIN}<br/>
+					<br/>pin errors: {errors.pin || 'none'}<br/>
 					<input type='submit'/>
+					Loading: {!!loading?'true':'false'}
 				</form>
 			</div>
 		)

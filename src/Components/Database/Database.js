@@ -4,12 +4,12 @@ const fs = window.require('fs')
 
 // read Json data with fs
 // otherwise return defaults
-function parseJson(filePath, defaults) {
-	try {
-		return JSON.parse(fs.readFileSync(filePath))
-	} catch(error) {
-		return defaults
-	}
+function parseJson(filePath, defaults, callback=() => {}) {
+	fs.readFile(filePath, 'utf8', (err, res) => {
+		if (err)
+			return callback(defaults, err)
+		return callback(JSON.parse(res), null)
+	})
 }
 
 // Write to JSON file in config directory
@@ -27,9 +27,14 @@ class Database {
 		// $XDG_CONFIG_HOME or ~/.config on Linux
 		// ~/Library/Application Support on macOS
 		const upath = (electron.app || electron.remote.app).getPath('userData')
-		console.log(upath)
+		console.log('storing db in config path: ' + upath)
 		this.path = path.join(upath, opts.fileName + '.json')
-		this.data = parseJson(this.path, opts.defaults)
+		this.data = opts.defaults
+		
+		parseJson(this.path, opts.defaults, (val, err) => {
+			console.log('successfully read db file')
+			this.data = val
+		})
 	}
 
 	// get JSON value from key
@@ -42,15 +47,10 @@ class Database {
 	}
 
 	// write JSON value from key
-	set(key, value) {
+	set(key, value, callback=() => {}) {
 		this.data[key] = value
-		fs.writeFileSync(this.path, JSON.stringify(this.data))
-	}
 
-	// delete a key from the db
-	remove(key) {
-		delete this.data[key]
-		fs.writeFileSync(this.path, JSON.stringify(this.data))
+		fs.writeFile(this.path, JSON.stringify(this.data), callback)
 	}
 }
 

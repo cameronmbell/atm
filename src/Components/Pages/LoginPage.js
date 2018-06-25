@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 
+// prop types
+import PropTypes from 'prop-types'
+
+// routing
+import { connect } from 'react-redux'
+
 // login form
 import LoginForm from '../Forms/LoginForm'
+import { login } from '../Actions/LoginAuth'
 
 class LoginPage extends Component {
-	submit = (data) => {
-		console.log(data)
-	}
+
+	// on successful login redirect to homepage
+	submit = (data) => 
+		this.props.login(data).then(() => this.props.history.push('/'))
 
 	render() {
 		return (
@@ -18,4 +26,15 @@ class LoginPage extends Component {
 	}
 }
 
-export default LoginPage
+LoginPage.propTypes = {
+
+	// enforce react router component
+	history: PropTypes.shape({
+		push: PropTypes.func.isRequired
+	}).isRequired,
+
+	// redux login action
+	login: PropTypes.func.isRequired
+}
+
+export default connect(null, { login })(LoginPage)
