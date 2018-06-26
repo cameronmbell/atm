@@ -1,13 +1,28 @@
 import React from 'react';
-import { Route } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { Switch } from 'react-router-dom'
 
 // pages
-import HomePage from './Pages/HomePage'
+import DashboardPage from './Pages/DashboardPage'
 import LoginPage from './Pages/LoginPage'
 
-export default props => (
+// private routing
+import GuestRoute from './Routes/GuestRoute'
+import UserRoute from './Routes/UserRoute'
+
+const App = ({ location }) => (
 	<div>
-		<Route exact path='/' component={HomePage}/>
-		<Route exact path='/login' component={LoginPage}/>
+		<Switch>
+			<UserRoute location={location} exact path='/dash' component={DashboardPage}/>
+			<GuestRoute location={location} path='/' component={LoginPage}/>
+		</Switch>
 	</div>
 )
+
+App.propTypes = {
+	location: PropTypes.shape({
+		pathname: PropTypes.string.isRequired
+	}).isRequired
+}
+
+export default App

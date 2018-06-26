@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 
 // react-router
-import { HashRouter as Router } from 'react-router-dom'
+import { HashRouter as Router, Route } from 'react-router-dom'
 
 // thunk action middleware
 import thunk from 'redux-thunk'
@@ -48,7 +48,7 @@ if (localStorage.user) {
 render((
 	<Provider store={store}>
 		<Router>
-			<App/>
+			<Route component={App}/>
 		</Router>
 	</Provider>
 ), document.getElementById('root'))

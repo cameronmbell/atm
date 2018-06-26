@@ -6,21 +6,25 @@ import PropTypes from 'prop-types'
 // routing
 import { connect } from 'react-redux'
 
+// routing
+import { Link } from 'react-router-dom'
+
 // login form
 import LoginForm from '../Forms/LoginForm'
 import { login } from '../Actions/LoginAuth'
 
 class LoginPage extends Component {
 
-	// on successful login redirect to homepage
+	// on successful login redirect to dashboard
 	submit = (data) => 
-		this.props.login(data).then(() => this.props.history.push('/'))
+		this.props.login(data).then(() => this.props.history.push('/dash'))
 
 	render() {
 		return (
 			<div>
 				<h1>Login Page</h1>
 				<LoginForm submit={this.submit}/>
+				<Link to='/dash'>Go to dash</Link>
 			</div>
 		)
 	}

@@ -11,6 +11,7 @@ import * as actions from '../Actions/LoginAuth'
 const HomePage = ({ isAuthenticated, logout }) => (
 	<div>
 		<h1>Home Page</h1>
+		<Link to='/dash'>Dashboard</Link>
 		{isAuthenticated? <button onClick={() => logout()}>Logout</button> : <Link to='/login'>Login</Link>}
 	</div>
 )
