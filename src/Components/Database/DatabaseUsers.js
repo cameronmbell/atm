@@ -31,25 +31,22 @@ class DatabaseUsers {
 
 	// add a new user if none exists
 	// otherwise modify an existing one
-	setUser(userName, props) {
+	setUser(userName, props, callback=() => {}) {
 		let storedUser = (this.db.get(userName) || {
 			fullName: userName,
 			balance: '0.00',
 			pin: '0000'
 		})
+		console.log('recieved: ' + userName)
+		console.log(storedUser)
 
 		// create/modify entry
-		this.db.set(userName, Object.assign(storedUser, props))
+		this.db.set(userName, Object.assign(storedUser, props), callback)
 	}
 
 	// get user object
 	getUser(userName) {
 		return this.db.get(userName)
-	}
-
-	// remove user from db
-	removeUser(userName) {
-		this.db.remove(userName)
 	}
 }
 

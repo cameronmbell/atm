@@ -13,7 +13,7 @@ import UserRoute from './Routes/UserRoute'
 const App = ({ location }) => (
 	<div>
 		<Switch>
-			<UserRoute location={location} exact path='/dash' component={DashboardPage}/>
+			<UserRoute location={location} path='/dash' component={DashboardPage}/>
 			<GuestRoute location={location} path='/' component={LoginPage}/>
 		</Switch>
 	</div>
