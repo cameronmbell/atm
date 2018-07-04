@@ -58,7 +58,7 @@ class SelectionForm extends Component {
 							.catch(err => console.warn({ errors: err }))
 						}
 					>
-						$100 Quick cash Withdraw
+						$100 Quick cash Withdrawal
 					</Button>
 				</Grid>
 			</Grid>

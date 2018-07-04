@@ -118,7 +118,7 @@ class WithdrawForm extends Component {
 								className={classes.button}
 								disabled={data.amount === ''}
 							>
-								Make Withdrawl
+								Make Withdrawal
 							</Button>
 						</Grid>
 					</Grid>
