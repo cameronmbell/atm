@@ -1,23 +1,26 @@
 // import reducer types
-import { TRANSACTION, WITHDRAWL, DEPOSIT } from '../Types'
+import { WITHDRAWL, DEPOSIT } from '../Types'
 import Api from '../Api'
 
 // redux action creators
-export const userMadeTransaction = (details) => ({
-	type: TRANSACTION,
+export const userMadeWithdrawl = (details) => ({
+	type: WITHDRAWL,
+	details
+})
+
+export const userMadeDeposit = (details) => ({
+	type: DEPOSIT,
 	details
 })
 
 export const withdraw = (user, amount) => dispatch =>
-	Api.user.transaction(user, { type: WITHDRAWL, amount })
+	Api.user.withdraw(user, amount)
 	.then(details => {
-		console.log('api success, now to dispatch')
-		dispatch(userMadeTransaction(details))
+		dispatch(userMadeWithdrawl(details))
 	})
 
 export const deposit = (user, amount) => dispatch =>
-	Api.user.transaction(user, { type: DEPOSIT, amount })
+	Api.user.deposit(user, amount)
 	.then(details => {
-		console.log('api success, now to dispatch')
-		dispatch(userMadeTransaction(details))
+		dispatch(userMadeDeposit(details))
 	})

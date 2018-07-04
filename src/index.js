@@ -24,6 +24,7 @@ import registerServiceWorker from './registerServiceWorker'
 
 // reauthenticate user on reload
 import { userLoggedIn } from './Components/Actions/LoginAuth'
+import { userMadeWithdrawl, userMadeDeposit } from './Components/Actions/Transaction'
 
 // import reducer to provide to all children
 import RootReducer from './Components/RootReducer'
@@ -35,14 +36,22 @@ const store = createStore(
 )
 
 // reauthenticate user on reload
-// if localStorage written to
-if (localStorage.user) {
-	try {
-		store.dispatch(userLoggedIn(JSON.parse(localStorage.user)))
-	} catch(e) {
-		console.warn('bad local storage')
-	}
+// if sessionStorage written to
+const lut = {
+	user: userLoggedIn,
+	deposit: userMadeDeposit,
+	withdrawl: userMadeWithdrawl
 }
+
+Object.keys(sessionStorage).forEach((key) => {
+	if (lut[key]) {
+		try {
+			store.dispatch(lut[key](JSON.parse(sessionStorage[key])))
+		} catch(e) {
+			console.warn('bad local storage: ' + key)
+		}
+	}
+})
 
 // draw to DOM
 render((

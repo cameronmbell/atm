@@ -12,22 +12,25 @@ import * as loginActions from '../Actions/LoginAuth'
 import * as transactionActions from '../Actions/Transaction'
 
 // pages to route to
+import InactivityTimer from '../Forms/InactivityTimer'
 import SelectionForm from '../Forms/SelectionForm'
 import WithdrawPage from './WithdrawPage'
+import DepositPage from './DepositPage'
 import InfoPage from './InfoPage'
 import SuccessPage from './SuccessPage'
 
 const DashboardPage = ({ logout, withdraw }) => (
 	<div>
 		<h1>Dashboard</h1>
+		<InactivityTimer seconds={120}/>
 		<Link to='/login'>Go to login</Link>
 		<button onClick={() => logout()}>logout</button>
 
 		<Switch>
-			<Route exact path='/dash/withdraw' component={WithdrawPage}/>
-			<Route exact path='/dash/deposit'/>
-			<Route exact path='/dash' component={SelectionForm}/>
-			<Route exact path='/dash/success' component={SuccessPage}/>
+			<Route path='/dash/withdraw' component={WithdrawPage}/>
+			<Route path='/dash/deposit' component={DepositPage}/>
+			<Route path='/dash/success' component={SuccessPage}/>
+			<Route path='/dash' component={SelectionForm}/>
 		</Switch>
 
 		<InfoPage/>
@@ -41,5 +44,6 @@ DashboardPage.propTypes = {
 
 export default connect(null, {
 	logout: loginActions.logout,
+	deposit: transactionActions.deposit,
 	withdraw: transactionActions.withdraw
 })(DashboardPage)

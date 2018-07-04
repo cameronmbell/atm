@@ -18,13 +18,13 @@ export const login = credentials => dispatch =>
 	Api.user.login(credentials).then(user => {
 
 		// store in browser (electron) local storage
-		localStorage.user = JSON.stringify(user)
+		sessionStorage.user = JSON.stringify(user)
 		dispatch(userLoggedIn(user))
 	})
 
 // logout a user, doesn't affect db
 // just remove from local storage
 export const logout = () => dispatch => {
-	localStorage.removeItem('user')
+	sessionStorage.clear()
 	dispatch(userLoggedOut())
 }

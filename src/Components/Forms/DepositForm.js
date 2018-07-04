@@ -8,9 +8,9 @@ import { connect } from 'react-redux'
 import money from 'money-math'
 import { withRouter } from 'react-router-dom'
 
-class WithdrawForm extends Component {
+class DepositForm extends Component {
 	state = {
-		// the amount to withdraw
+		// the amount to deposit
 		data: {
 			amount: '',
 		},
@@ -18,7 +18,16 @@ class WithdrawForm extends Component {
 		// for async requests
 		loading: false,
 
-		errors: ''
+		err: ''
+	}
+
+	handleValidate = data => {
+		let err = ''
+
+		if (!data.amount) err = 'amount can\'t be blank'
+		if (isNaN(data.amount)) err = 'not a numeric value'
+
+		return err
 	}
 
 	handleChange = e => {
@@ -30,13 +39,20 @@ class WithdrawForm extends Component {
 	handleSubmit = e => {
 		e.preventDefault()
 
-		this.setState({ loading: true })
+		const errors = this.handleValidate(this.state.data)
+		this.setState({ err: errors })
 
-		this.props
-			.submit(this.props.user, this.state.data.amount)
-			.then(() => this.setState({ loading: false }))
-			.then(() => this.props.history.push('/dash/success'))
-			.catch(err => this.setState({ errors: err }))
+		if (errors.length === 0) {
+			this.setState({ loading: true })
+
+			// enforce 2dp on input
+			let amount = Number(this.state.data.amount).toFixed(2)
+
+			this.props
+				.submit(this.props.user, amount)
+				.then(() => this.props.history.push('/dash/success'))
+				.catch(err => this.setState({ err, loading: false }))
+		}
 
 		return false
 	}
@@ -56,29 +72,32 @@ class WithdrawForm extends Component {
 	)
 
 	render() {
-		const { data, loading } = this.state
+		const { data, loading, err } = this.state
 
 		return (
 			<div>
 				<form onSubmit={this.handleSubmit}>
-					<this.amountInput value='25.00' />
-					<this.amountInput value='50.00' />
-					<this.amountInput value='100.00' />
-					<this.amountInput value='250.00' />
-					<this.amountInput value='500.00' />
+					<input 
+						type='text' 
+						name='amount'
+						placeholder='100'
+						value={data.amount}
+						onChange={this.handleChange}
+					/>
 					<input disabled={data.amount === ''} type='submit'/>
 					Loading: {!!loading?'true':'false'}
+					Errors: {err || 'none'}
 					Selected Amount: {data.amount}
 				</form>
 				<button onClick={() => this.props.history.push('/dash')}>
-					cancel withdrawl
+					cancel deposit
 				</button>
 			</div>
 		)
 	}
 }
 
-WithdrawForm.propTypes = {
+DepositForm.propTypes = {
 	history: PropTypes.shape({
 		push: PropTypes.func.isRequired
 	}).isRequired,
@@ -94,4 +113,4 @@ function onStateUpdate(state) {
 	}
 }
 
-export default connect(onStateUpdate)(withRouter(WithdrawForm))
+export default connect(onStateUpdate)(withRouter(DepositForm))
