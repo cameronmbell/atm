@@ -37,10 +37,10 @@ export default {
 				const id = db.getUser(credentials.userName)
 
 				if (id === undefined) {
-					reject({ userName: 'unknown username' })
+					reject({ userName: 'Unknown username' })
 				} else {
 					if (id.pin !== credentials.pin)
-						reject({ pin: 'invalid pin' })
+						reject({ pin: 'Invalid pin' })
 					else {
 						resolve({
 							...id,

@@ -2,6 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as loginActions from '../Actions/LoginAuth'
+import { Typography, withStyles } from '@material-ui/core'
+
+const styles = theme => ({
+	text: {
+		vericalAlign: 'middle',
+		display: 'inline-block',
+		lineHeight: '48px'
+	}
+})
 
 class InactivityTimer extends Component {
 	state = { 
@@ -42,10 +51,12 @@ class InactivityTimer extends Component {
 	}
 
 	render() {
+		const { classes } = this.props
+
 		return (
-			<div>
+			<Typography variant='title' className={classes.text}>
 				{(this.state.counter < this.props.seconds / 2)?this.state.counter:''}
-			</div>
+			</Typography>
 		)
 	}
 }
@@ -55,4 +66,4 @@ InactivityTimer.propTypes = {
 	logout: PropTypes.func.isRequired
 }
 
-export default connect(null, { logout: loginActions.logout })(InactivityTimer)
+export default connect(null, { logout: loginActions.logout })(withStyles(styles)(InactivityTimer))

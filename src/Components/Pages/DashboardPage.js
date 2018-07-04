@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 // prop types
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+
+// use material ui flex grid layout
+import { Grid } from '@material-ui/core'
 
 // routing
 import { Link, Route, Switch } from 'react-router-dom'
@@ -16,34 +20,78 @@ import InactivityTimer from '../Forms/InactivityTimer'
 import SelectionForm from '../Forms/SelectionForm'
 import WithdrawPage from './WithdrawPage'
 import DepositPage from './DepositPage'
-import InfoPage from './InfoPage'
 import SuccessPage from './SuccessPage'
 
-const DashboardPage = ({ logout, withdraw }) => (
-	<div>
-		<h1>Dashboard</h1>
-		<InactivityTimer seconds={120}/>
-		<Link to='/login'>Go to login</Link>
-		<button onClick={() => logout()}>logout</button>
+import ComponentLogo from '../Components/ComponentLogo'
+import ComponentInfo from '../Components/ComponentInfo'
+import ComponentExit from '../Components/ComponentExit'
+import ComponentPrint from '../Components/ComponentPrint'
 
-		<Switch>
-			<Route path='/dash/withdraw' component={WithdrawPage}/>
-			<Route path='/dash/deposit' component={DepositPage}/>
-			<Route path='/dash/success' component={SuccessPage}/>
-			<Route path='/dash' component={SelectionForm}/>
-		</Switch>
+// JSS style object
+const styles = theme => ({
+	root: {
+		padding: '32px',
+		margin: '0 auto',
+		height: '100%',
+		width: '100%'
+	},
 
-		<InfoPage/>
-	</div>
-)
+	tall: { height: '100%' },
+
+	spacer: { paddingBottom: 48 }
+})
+
+class DashboardPage extends Component {
+	render() {
+		const { classes, logout, withdraw } = this.props
+
+		return (
+			<div className={classes.root}>
+				<Grid container justify='space-between'>
+					<Grid item>
+						<ComponentLogo/>
+					</Grid>
+					<Grid item>
+						<Grid spacing={0} container justify='space-between' align='center'>
+							<Grid item> <InactivityTimer seconds={60}/> </Grid>
+							<Grid item> 
+								<ComponentPrint/>
+							</Grid>
+							<Grid item> 
+								<ComponentExit logout={logout}/>
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+				<div className={classes.spacer}></div>
+				<Grid container spacing={32} justify='space-around'>
+					<Grid item xs={3}>
+						<ComponentInfo/>
+					</Grid>
+					<Grid item xs={8}>
+						<Switch>
+							<Route path='/dash/withdraw' component={WithdrawPage}/>
+							<Route path='/dash/deposit' component={DepositPage}/>
+							<Route path='/dash/success' component={SuccessPage}/>
+							<Route path='/dash' component={SelectionForm}/>
+						</Switch>
+					</Grid>
+
+					<Grid item xs={1}> </Grid>
+				</Grid>
+			</div>
+		)
+	}
+}
 
 DashboardPage.propTypes = {
 	logout: PropTypes.func.isRequired,
 	withdraw: PropTypes.func.isRequired,
+	classes: PropTypes.object.isRequired
 }
 
 export default connect(null, {
 	logout: loginActions.logout,
 	deposit: transactionActions.deposit,
 	withdraw: transactionActions.withdraw
-})(DashboardPage)
+})(withStyles(styles)(DashboardPage))

@@ -2,11 +2,28 @@ import React, { Component } from 'react';
 
 // prop types
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core'
 
 // need to get user balance for client-side validation
 import { connect } from 'react-redux'
 import money from 'money-math'
 import { withRouter } from 'react-router-dom'
+import { TextField, Typography, Grid, Button } from '@material-ui/core';
+import rootButtonStyle from '../Themes/Button'
+
+const styles = theme => ({
+	root: { 
+		color: 'white', 
+		margin: theme.spacing.unit*2 
+	},
+	button: Object.assign(rootButtonStyle(theme), { height: '48px' }),
+	pinkButton: Object.assign(rootButtonStyle(theme), {
+		height: '48px',
+		backgroundColor: theme.palette.secondary.light,
+		'&:hover': { backgroundColor: theme.palette.secondary.main },
+		'&:disabled': { backgroundColor: theme.palette.secondary.dark }
+	})
+})
 
 class DepositForm extends Component {
 	state = {
@@ -24,8 +41,8 @@ class DepositForm extends Component {
 	handleValidate = data => {
 		let err = ''
 
-		if (!data.amount) err = 'amount can\'t be blank'
-		if (isNaN(data.amount)) err = 'not a numeric value'
+		if (!data.amount) err = 'Blank amount'
+		if (isNaN(data.amount)) err = 'Not a numeric value'
 
 		return err
 	}
@@ -73,25 +90,48 @@ class DepositForm extends Component {
 
 	render() {
 		const { data, loading, err } = this.state
+		const { classes } = this.props
 
 		return (
 			<div>
 				<form onSubmit={this.handleSubmit}>
-					<input 
-						type='text' 
+					<TextField
+						fullWidth
+						autoFocus
+						helperText={err || ''}
+						placeholder='Amount to deposit, e.g. 250'
 						name='amount'
-						placeholder='100'
 						value={data.amount}
 						onChange={this.handleChange}
+						className={classes.root}
+						error={!!err}
 					/>
-					<input disabled={data.amount === ''} type='submit'/>
-					Loading: {!!loading?'true':'false'}
-					Errors: {err || 'none'}
-					Selected Amount: {data.amount}
+					<br/>
+					<br/>
+	
+					<Grid container spacing={16} justify='center'>
+						<Grid item xs={12} style={{height:48}}></Grid>
+						<Grid item xs={6}>
+							<Button fullWidth 
+								variant='text' 
+								className={classes.pinkButton}
+								onClick={() => this.props.history.push('/dash')}
+							>
+								Cancel
+							</Button>
+						</Grid>
+						<Grid item xs={6}>
+							<Button fullWidth 
+								variant='text' 
+								type='submit'
+								className={classes.button}
+								disabled={data.amount === ''}
+							>
+								Make Deposit
+							</Button>
+						</Grid>
+					</Grid>
 				</form>
-				<button onClick={() => this.props.history.push('/dash')}>
-					cancel deposit
-				</button>
 			</div>
 		)
 	}
@@ -104,7 +144,8 @@ DepositForm.propTypes = {
 	submit: PropTypes.func.isRequired,
 	user: PropTypes.shape({
 		balance: PropTypes.string.isRequired
-	}).isRequired
+	}).isRequired,
+	classes: PropTypes.object.isRequired
 }
 
 function onStateUpdate(state) {
@@ -113,4 +154,4 @@ function onStateUpdate(state) {
 	}
 }
 
-export default connect(onStateUpdate)(withRouter(DepositForm))
+export default connect(onStateUpdate)(withRouter(withStyles(styles)(DepositForm)))

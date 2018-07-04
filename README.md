@@ -9,6 +9,6 @@ yarn
 # run local dev server
 yarn run electron-dev
 
-# pacakge
+# package
 yarn run electron-pack
 ```

@@ -3,6 +3,24 @@ import React, { Component } from 'react';
 // prop types
 import PropTypes from 'prop-types'
 
+import { withStyles } from '@material-ui/core/styles'
+import { Button, TextField } from '@material-ui/core'
+import { ArrowForward } from '@material-ui/icons'
+
+import rootButtonStyle from '../Themes/Button'
+
+const styles = theme => ({
+	root: { 
+		color: 'white', 
+		margin: theme.spacing.unit*2 
+	},
+
+	button: Object.assign(rootButtonStyle(theme), {
+		margin: theme.spacing.unit*2,
+		height: '48px'
+	})
+})
+
 class LoginForm extends Component {
 	state = {
 		// all form data, written into component state
@@ -27,9 +45,10 @@ class LoginForm extends Component {
 	handleValidate = data => {
 		const err = { }
 
-		if (!data.userName) err.userName = 'username can\'t be blank'
-		if (!data.pin) err.pin = 'PIN can\'t be blank'
-		if (data.pin.length !== 4) err.pin = 'PIN must be 4 characters'
+		if (!data.userName) err.userName = 'Blank username'
+		if (!data.pin) err.pin = 'Blank PIN'
+		if (data.pin.length !== 4) err.pin = 'PIN must be 4 numbers'
+		if (isNaN(data.pin)) err.pin = 'PIN must be 4 numbers'
 
 		return err
 	}
@@ -54,31 +73,43 @@ class LoginForm extends Component {
 
 	render() {
 		const { data, errors, loading } = this.state
+		const { classes } = this.props
 
 		return (
 			<div>
 				<form onSubmit={this.handleSubmit}>
-					<input 
-						type='text' 
+					<TextField
+						fullWidth
+						autoFocus
+						helperText={errors.userName || ''}
+						placeholder='Username'
 						name='userName'
-						placeholder='username' 
 						value={data.userName}
 						onChange={this.handleChange}
+						className={classes.root}
+						error={!!errors.userName}
 					/>
-					<br/>Login errors: {errors.userName || 'none'}<br/>
-
 					<br/>
-					<input 
-						type='text' 
+					<TextField
+						fullWidth
+						helperText={errors.pin || ''}
+						placeholder='PIN'
+						type='password'
 						name='pin'
-						placeholder='PIN' 
 						value={data.pin}
 						onChange={this.handleChange}
+						className={classes.root}
+						error={!!errors.pin}
 					/>
-
-					<br/>pin errors: {errors.pin || 'none'}<br/>
-					<input type='submit'/>
-					Loading: {!!loading?'true':'false'}
+					<br/>
+					<br/>
+					<Button 
+						fullWidth
+						color='primary'
+						variant='contained'
+						type='submit'
+						className={classes.button}
+					>Login</Button>
 				</form>
 			</div>
 		)
@@ -86,7 +117,8 @@ class LoginForm extends Component {
 }
 
 LoginForm.propTypes = {
-	submit: PropTypes.func.isRequired
+	submit: PropTypes.func.isRequired,
+	classes: PropTypes.object.isRequired
 }
 
-export default LoginForm
+export default withStyles(styles)(LoginForm)

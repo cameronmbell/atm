@@ -15,7 +15,7 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import thunk from 'redux-thunk'
 
 // material-ui static font loading
-// import 'typeface-roboto'
+import 'typeface-roboto'
 
 // local setup
 import './index.css'

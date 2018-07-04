@@ -2,9 +2,29 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Grid, Typography, Button } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import money from 'money-math'
+import { withRouter } from 'react-router-dom'
+import * as Icons from '@material-ui/icons'
+import rootButtonStyle from '../Themes/Button'
 
 import Print from '../Receipt/Print'
+
+const styles = theme => ({
+	text: {
+		fontSize: '2em',
+		fontWeight: '600',
+		textAlign: 'center'
+	},
+	blueText: {
+		color: theme.palette.primary.light,
+		textAlign: 'center'
+	},
+	fabButton: Object.assign(rootButtonStyle(theme), {
+		width: '88px'
+	})
+})
 
 class SuccessPage extends Component {
 	generate = (user, transaction) => {
@@ -38,13 +58,30 @@ class SuccessPage extends Component {
 	}
 
 	render() {
+		const { classes, history } = this.props
 		return (
 			<div>
-				Success
-				<Link to='/dash'>ok</Link>
-				<button onClick={this.print}>
-					print reciept
-				</button>
+				<Grid container spacing={16} justify='center' alignItems='center'>
+					<Grid item xs={8}>
+						<Typography variant='title' className={classes.text}>
+							Transaction Successful
+						</Typography>
+						<Typography variant='caption' className={classes.blueText}>	
+							Note receipts are also printed into the download directory
+						</Typography>
+					</Grid>
+					<Grid item xs={12} style={{height:48}}></Grid>
+					<Grid item>
+						<Button variant='fab' color='white' onClick={() => this.props.history.push('/dash')} className={classes.fabButton}>
+							<Icons.Done/>
+						</Button>
+					</Grid>
+					<Grid item>
+						<Button variant='fab' color='white' onClick={this.print} className={classes.fabButton}>
+							<Icons.Print/>
+						</Button>
+					</Grid>
+				</Grid>
 			</div>
 		)
 	}
@@ -54,7 +91,9 @@ SuccessPage.propTypes = {
 	user: PropTypes.shape({
 		fullName: PropTypes.string.isRequired
 	}).isRequired,
-
+	history: PropTypes.shape({
+		push: PropTypes.func.isRequired
+	}).isRequired,
 	transaction: PropTypes.shape({
 		initial: PropTypes.string.isRequired,
 		balance: PropTypes.string.isRequired,
@@ -71,4 +110,4 @@ function onStateUpdate(state) {
 	}
 }
 
-export default connect(onStateUpdate)(SuccessPage)
+export default connect(onStateUpdate)(withRouter(withStyles(styles)(SuccessPage)))
