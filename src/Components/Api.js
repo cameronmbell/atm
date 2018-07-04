@@ -57,14 +57,14 @@ export default {
 				const id = db.getUser(user.userName)
 
 				if (id === undefined) {
-					reject('unable to find user')
+					reject('Unable to find user')
 				} else if (id.pin !== user.pin) {
-					reject('unable to use pin to authorise transaction')
+					reject('Unable to authorise transaction')
 				} else {
 					let initial = id.balance
 
 					if (money.cmp(initial, amount) < 0)
-						reject('insufficient funds to withdraw')
+						reject('Insufficient funds')
 					else {
 						const balance = money.subtract(initial, amount)
 						db.setUser(user.userName, { balance }, () => 
@@ -85,14 +85,14 @@ export default {
 				const id = db.getUser(user.userName)
 
 				if (id === undefined) {
-					reject('unable to find user')
+					reject('Unable to find user')
 				} else if (id.pin !== user.pin) {
-					reject('unable to use pin to authorise transaction')
+					reject('Unable to authorise transaction')
 				} else {
 					let initial = id.balance
 
 					if (money.cmp(amount, DEPOSIT_LIMIT) > 0)
-						reject('deposit too great amount to deposit')
+						reject('Deposit amount too great')
 					else {
 						const balance = money.add(initial, amount)
 						db.setUser(user.userName, { balance }, () => 
